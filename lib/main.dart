@@ -1,14 +1,20 @@
-import 'package:error404project/views/CompleteProfilePage.dart';
-import 'package:error404project/views/WorkSchedulePage.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:error404project/mobile/views/HomePage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'common/controllers/route_manager.dart';
 import 'firebase_config.dart';
-import 'views/WelcomePage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initializeFirebase(); // Khởi tạo Firebase
+  if (kIsWeb) {
+    // Dùng options khi chạy trên Web
+    await Firebase.initializeApp(options: firebaseOptions);
+  } else {
+    // Không cần options khi chạy trên Mobile
+    await Firebase.initializeApp();
+  }
 
   runApp(const MyApp());
 }
@@ -18,9 +24,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+      routerConfig: appRouter,
     );
   }
 }
