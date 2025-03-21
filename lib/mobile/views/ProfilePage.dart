@@ -160,7 +160,6 @@ class ProfilePage extends StatelessWidget {
           },
         ),
       ),
-      bottomNavigationBar: const BottomNavBarWidget(currentIndex: 3),
     );
   }
 }

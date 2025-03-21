@@ -1,43 +1,26 @@
 import 'package:flutter/material.dart';
-import '../../mobile/views/HomePage.dart';
-import '../../mobile/views/NotificationPage.dart';
-import '../../mobile/views/ProfilePage.dart';
-import '../../mobile/views/TaskPage.dart';
-class BottomNavBarWidget extends StatefulWidget {
+import 'package:go_router/go_router.dart';
+
+class BottomNavBarWidget extends StatelessWidget {
   final int currentIndex;
 
-  const BottomNavBarWidget({
-    Key? key,
-    required this.currentIndex,
-  }) : super(key: key);
+  const BottomNavBarWidget({Key? key, required this.currentIndex}) : super(key: key);
 
-  @override
-  _BottomNavBarWidgetState createState() => _BottomNavBarWidgetState();
-}
-
-class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
-  late int _selectedIndex;
-
-  final List<Widget> _pages = const [
-    HomePage(),
-    TaskPage(),
-    NotificationPage(),
-    ProfilePage(),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = widget.currentIndex;
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => _pages[index]),
-    );
+  void _onItemTapped(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        context.go('/home');
+        break;
+      case 1:
+        context.go('/tasks');
+        break;
+      case 2:
+        context.go('/notifications');
+        break;
+      case 3:
+        context.go('/profile');
+        break;
+    }
   }
 
   @override
@@ -65,8 +48,8 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
           label: 'Tài khoản',
         ),
       ],
-      currentIndex: _selectedIndex,
-      onTap: _onItemTapped,
+      currentIndex: currentIndex,
+      onTap: (index) => _onItemTapped(context, index),
     );
   }
 }

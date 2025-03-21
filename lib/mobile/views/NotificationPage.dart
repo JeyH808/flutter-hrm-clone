@@ -109,7 +109,6 @@ class _NotificationPageState extends State<NotificationPage> {
           );
         },
       ),
-      bottomNavigationBar: const BottomNavBarWidget(currentIndex: 2),
     );
   }
 }

@@ -85,7 +85,6 @@ class TaskPage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBarWidget(currentIndex: 1),
     );
   }
 }
