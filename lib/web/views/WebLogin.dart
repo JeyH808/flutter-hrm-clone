@@ -1,9 +1,49 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../common/widgets/custom_button.dart';
+import '../../common/services/authentication.dart';
+import 'package:go_router/go_router.dart';
 
-class WebLogin extends StatelessWidget {
+class WebLogin extends StatefulWidget {
   const WebLogin({super.key});
+
+  @override
+  _WebLoginState createState() => _WebLoginState();
+}
+
+class _WebLoginState extends State<WebLogin> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final FirebaseAuthService authService = FirebaseAuthService();
+  String? errorMessage;
+
+  Future<void> _webLogin() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        errorMessage = 'Vui lòng điền đầy đủ thông tin';
+      });
+      return;
+    }
+    try {
+      User? user = await authService.signInWithEmailAndPassword(email, password, context);
+
+      if (user != null) {
+        context.go('/home');
+      } else {
+        setState(() {
+          errorMessage = 'Tài khoản hoặc mật khẩu không chính xác';
+        });
+      }
+    } catch (e) {
+      print("Login error: $e");
+      setState(() {
+        errorMessage = 'Đã xảy ra lỗi. Vui lòng thử lại.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,27 +99,41 @@ class WebLogin extends StatelessWidget {
                       const Text("Login",
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: emailController,
+                        decoration: const InputDecoration(
                           labelText: "Email",
                           border: OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: passwordController,
+                        decoration: const InputDecoration(
                           labelText: "Password",
                           border: OutlineInputBorder(),
                         ),
                         obscureText: true,
                       ),
+                      if (errorMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(
+                            errorMessage!,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 20),
                       buildCustomButton(
                         text: "Login",
-                        onPressed: () => context.go('/home'),
+                        onPressed: _webLogin,
                         backgroundColor: const Color(0xFF166FB1),
                         textColor: Colors.white,
                       ),
+
                       TextButton(
                         onPressed: () => context.go('/register'),
                         child: const Text("Don't have an account? Register"),

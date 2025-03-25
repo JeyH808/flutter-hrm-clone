@@ -1,4 +1,5 @@
 import 'package:error404project/mobile/views/WelcomePage.dart';
+import 'package:error404project/mobile/views/WorkSchedulePage.dart';
 import 'package:flutter/foundation.dart'; // Để sử dụng kIsWeb
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,7 @@ import '../../mobile/views/CompleteProfilePage.dart';
 import '../../mobile/views/HomePage.dart';
 import '../../mobile/views/LoginPage.dart';
 import '../../mobile/views/NotificationPage.dart';
-import '../../mobile/views/ProfilePage.dart';
+import '../../mobile/views/ManagePage.dart';
 import '../../mobile/views/RegisPage.dart';
 import '../../mobile/views/TaskPage.dart';
 import '../../web/views/Home.dart';
@@ -25,21 +26,24 @@ final GoRouter appRouter = GoRouter(
         return kIsWeb ? const WebLogin() : const WelcomePage();
       },
     ),
-    // Trang đăng nhập
     GoRoute(
       path: '/login',
       builder: (context, state) {
         return kIsWeb ? const WebLogin() : const LoginPage();
       },
     ),
-    // Trang đăng ký
     GoRoute(
       path: '/register',
       builder: (context, state) {
         return kIsWeb ? const WebRegister() : const RegisterPage();
       },
     ),
-    // Trang Home (sau khi đăng nhập)
+    GoRoute(
+        path: '/work-schedule',
+        builder: (context, state) {
+          return WorkSchedulePage();
+          },
+    ),
     GoRoute(
       path: '/home',
       builder: (context, state) {
@@ -63,7 +67,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(path: '/home', builder: (context, state) => const HomePage()),
         GoRoute(path: '/tasks', builder: (context, state) => const TaskPage()),
         GoRoute(path: '/notifications', builder: (context, state) => const NotificationPage()),
-        GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
+        GoRoute(path: '/manage', builder: (context, state) => const ManagePage()),
       ],
     ),
   ],
@@ -77,7 +81,7 @@ int _getIndexFromPath(String path) {
       return 1;
     case '/notifications':
       return 2;
-    case '/profile':
+    case '/manage':
       return 3;
     default:
       return 0;

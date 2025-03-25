@@ -1,11 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import '../../common/widgets/BottomNavBarWidget.dart';
 import '../../common/widgets/GridHomePage.dart';
-class HomePage extends StatelessWidget {
+
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    if (currentUser != null) {
+      var userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .get();
+      if (userDoc.exists) {
+        setState(() {
+          userData = userDoc.data();
+        });
+      }
+    }
+  }
   String _getGreeting() {
     int hour = DateTime.now().hour;
     return hour < 10
@@ -50,8 +80,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    final currentUser = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -90,9 +118,9 @@ class HomePage extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Người dùng",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                Text(
+                                  userData?['name'] ?? 'Không có tên',
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -100,9 +128,9 @@ class HomePage extends StatelessWidget {
                                     color: Colors.white.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: const Text(
-                                    "Bộ phận",
-                                    style: TextStyle(fontSize: 14, color: Colors.white),
+                                  child: Text(
+                                    userData?['department'] ?? 'Không có bộ phận',
+                                    style: const TextStyle(fontSize: 14, color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -190,7 +218,7 @@ class HomePage extends StatelessWidget {
                     title: 'Lịch làm việc',
                     subtitle: 'Ca làm việc và thay ca',
                     onTap: () {
-
+                      context.push('/work-schedule');
                     },
                   ),
                   GridItem(icon: Icons.beach_access, title: 'Đăng ký nghỉ', subtitle: 'Nghỉ ngày, nghỉ ca', onTap: () {}),

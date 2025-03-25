@@ -1,9 +1,77 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../common/widgets/custom_button.dart';
+import '../../common/services/authentication.dart';
 
-class WebRegister extends StatelessWidget {
+class WebRegister extends StatefulWidget {
   const WebRegister({super.key});
+
+  @override
+  State<WebRegister> createState() => _WebRegisterState();
+
+}
+
+class _WebRegisterState extends State<WebRegister> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final FirebaseAuthService _authService = FirebaseAuthService();
+  String _errorMessage = "";
+
+  Future<void> _register() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      setState(() {
+        _errorMessage = "Điền đầy đủ thông tin!";
+      });
+      return;
+    }
+
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email)) {
+      setState(() {
+        _errorMessage = "Định dạng email không chính xác!";
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      setState(() {
+        _errorMessage = "Mật khẩu phải có ít nhất 6 kí tự!";
+      });
+      return;
+    }
+
+    if (password != confirmPassword) {
+      setState(() {
+        _errorMessage = "Mật khẩu không khớp!";
+      });
+      return;
+    }
+
+    try {
+      final user = await _authService.signUpWithEmailAndPassword(email, password);
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'email': email,
+          'isProfileComplete': false,
+        });
+
+        context.go('/complete-profile');
+      } else {
+        setState(() {
+          _errorMessage = "Email đã tồn tại!";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Đã xảy ra lỗi: $e";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,32 +127,43 @@ class WebRegister extends StatelessWidget {
                       const Text("Register",
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
                           labelText: "Email",
                           border: OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
                           labelText: "Password",
                           border: OutlineInputBorder(),
                         ),
                         obscureText: true,
                       ),
                       const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: _confirmPasswordController,
+                        decoration: const InputDecoration(
                           labelText: "Confirm Password",
                           border: OutlineInputBorder(),
                         ),
                         obscureText: true,
                       ),
                       const SizedBox(height: 20),
+                      if (_errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: Text(
+                            _errorMessage,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
                       buildCustomButton(
                         text: "Register",
-                        onPressed: () => context.go('/home'),
+                        onPressed: _register,
                         backgroundColor: const Color(0xFF166FB1),
                         textColor: Colors.white,
                       ),

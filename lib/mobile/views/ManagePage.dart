@@ -3,12 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../../common/services/authentication.dart';
-import '../../common/widgets/BottomNavBarWidget.dart';
 import '../../common/widgets/ListOptionsWidget.dart';
 import 'dart:typed_data';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ManagePage extends StatelessWidget {
+  const ManagePage({super.key});
 
   @override
   Widget build(BuildContext context) {
