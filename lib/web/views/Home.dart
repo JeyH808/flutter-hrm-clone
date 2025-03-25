@@ -4,10 +4,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../../common/services/authentication.dart';
 import '../../common/widgets/ListOptionsWidget.dart';
+import '../../common/widgets/GridHomePage.dart';
 import 'dart:typed_data';
 
-class WebHome extends StatelessWidget {
+class WebHome extends StatefulWidget {
   const WebHome({super.key});
+
+  @override
+  _WebHomeState createState() => _WebHomeState();
+}
+
+class _WebHomeState extends State<WebHome> {
+  String selectedOption = 'Trang Chủ';
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +47,9 @@ class WebHome extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: Container(
-                    color: Colors.grey[200], // Đổi màu nền cho dễ nhìn
+                    color: Colors.grey[200],
                     child: Column(
                       children: [
-                        // Avatar & User Info
                         Container(
                           padding: const EdgeInsets.all(16.0),
                           child: Row(
@@ -86,35 +93,48 @@ class WebHome extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const ListOptionsWidget(
+                        ListOptionsWidget(
+                          icon: Icons.home,
+                          title: 'Trang Chủ',
+                          isSelected: selectedOption == 'Trang Chủ',
+                          onTap: () {
+                            setState(() {
+                              selectedOption = 'Trang Chủ';
+                            });
+                          },
+                        ),
+                        ListOptionsWidget(
                           icon: Icons.person,
                           title: 'Hồ sơ',
                           description: 'Thay đổi thông tin cá nhân',
+                          isSelected: selectedOption == 'Hồ sơ',
+                          onTap: () {
+                            setState(() {
+                              selectedOption = 'Hồ sơ';
+                            });
+                          },
                         ),
-                        const ListOptionsWidget(
+                        ListOptionsWidget(
                           icon: Icons.lock,
                           title: 'Bảo mật',
                           description: 'Danh sách thiết bị đăng nhập, đổi mật khẩu',
+                          isSelected: selectedOption == 'Bảo mật',
+                          onTap: () {
+                            setState(() {
+                              selectedOption = 'Bảo mật';
+                            });
+                          },
                         ),
-                        const ListOptionsWidget(
+                        ListOptionsWidget(
                           icon: Icons.notifications,
                           title: 'Cài đặt thông báo',
                           description: 'Tắt/bật các thông báo cần thiết',
-                        ),
-                        const ListOptionsWidget(
-                          icon: Icons.feedback,
-                          title: 'Đóng góp ý kiến, báo lỗi',
-                          description: 'Đóng góp ý kiến, báo lỗi',
-                        ),
-                        const ListOptionsWidget(
-                          icon: Icons.group,
-                          title: 'Group HRM trên Facebook',
-                          description: 'Cộng đồng trao đổi, tư vấn kinh nghiệm',
-                        ),
-                        const ListOptionsWidget(
-                          icon: Icons.swap_horiz,
-                          title: 'Chuyển tài khoản',
-                          description: 'Có thể đăng nhập nhiều tài khoản...',
+                          isSelected: selectedOption == 'Cài đặt thông báo',
+                          onTap: () {
+                            setState(() {
+                              selectedOption = 'Cài đặt thông báo';
+                            });
+                          },
                         ),
                         ListOptionsWidget(
                           icon: Icons.logout,
@@ -135,10 +155,43 @@ class WebHome extends StatelessWidget {
                 Expanded(
                   flex: 7,
                   child: Container(
-                    color: Colors.white, // Để nền trắng giúp dễ nhìn hơn
-                    child: const Center(
+                    color: Colors.white,
+                    child: selectedOption == 'Trang Chủ'
+                        ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        childAspectRatio: 3 / 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        children: [
+                          GridItem(
+                            icon: Icons.calendar_today,
+                            title: 'Lịch làm việc',
+                            subtitle: 'Ca làm việc và thay ca',
+                            onTap: () {},
+                          ),
+                          GridItem(
+                              icon: Icons.beach_access,
+                              title: 'Đăng ký nghỉ',
+                              subtitle: 'Nghỉ ngày, nghỉ ca',
+                              onTap: () {}),
+                          GridItem(
+                              icon: Icons.access_time,
+                              title: 'Số giờ làm việc',
+                              subtitle: '89 giờ',
+                              onTap: () {}),
+                          GridItem(
+                              icon: Icons.announcement,
+                              title: 'Bảng tin',
+                              subtitle: '0 tin tức',
+                              onTap: () {}),
+                        ],
+                      ),
+                    )
+                        : const Center(
                       child: Text(
-                        "Chọn một mục bên trái để hiển thị nội dung",
+                        'Chức năng đang phát triển',
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                     ),

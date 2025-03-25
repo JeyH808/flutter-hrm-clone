@@ -1,5 +1,6 @@
 import 'package:error404project/mobile/views/WelcomePage.dart';
 import 'package:error404project/mobile/views/WorkSchedulePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart'; // Để sử dụng kIsWeb
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,13 @@ import '../../web/views/WebRegister.dart';
 import '../widgets/BottomNavBarWidget.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+  redirect: (context, state) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return '/home';
+    }
+    return null;
+  },
   routes: [
     // Route mặc định: kiểm tra người dùng đã đăng nhập hay chưa
     GoRoute(

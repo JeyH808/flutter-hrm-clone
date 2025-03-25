@@ -7,6 +7,7 @@ class ListOptionsWidget extends StatelessWidget {
   final Color? iconColor;
   final Color? textColor;
   final VoidCallback? onTap;
+  final bool? isSelected; // Thêm thuộc tính isSelected
 
   const ListOptionsWidget({
     Key? key,
@@ -16,6 +17,7 @@ class ListOptionsWidget extends StatelessWidget {
     this.iconColor,
     this.textColor,
     this.onTap,
+    this.isSelected, // Đánh dấu là required
   }) : super(key: key);
 
   @override
@@ -37,7 +39,12 @@ class ListOptionsWidget extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(color: textColor ?? Colors.black),
+                        style: TextStyle(
+                          color: textColor ?? Colors.black,
+                          fontWeight: (isSelected ?? false) ? FontWeight.bold : FontWeight.normal,
+
+
+                        ),
                       ),
                       if (description != null)
                         Text(
@@ -47,7 +54,6 @@ class ListOptionsWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.arrow_forward_ios, size: 16),
               ],
             ),
           ),

@@ -89,38 +89,38 @@ class ManagePage extends StatelessWidget {
                       const ListOptionsWidget(
                         icon: Icons.lock,
                         title: 'Bảo mật',
-                        description: 'Danh sách thiết bị đăng nhập, đổi mật khẩu',
+                        description: 'Danh sách thiết bị đăng nhập, đổi mật khẩu', isSelected: false,
                       ),
                       const ListOptionsWidget(
                         icon: Icons.notifications,
                         title: 'Cài đặt thông báo',
-                        description: 'Tắt/bật các thông báo cần thiết',
+                        description: 'Tắt/bật các thông báo cần thiết', isSelected: false,
                       ),
                       const ListOptionsWidget(
                         icon: Icons.feedback,
                         title: 'Đóng góp ý kiến, báo lỗi',
-                        description: 'Đóng góp ý kiến, báo lỗi',
+                        description: 'Đóng góp ý kiến, báo lỗi', isSelected: false,
                       ),
                       const ListOptionsWidget(
                         icon: Icons.group,
                         title: 'Group HRM trên Facebook',
-                        description: 'Cộng đồng trao đổi, tư vấn kinh nghiệm',
+                        description: 'Cộng đồng trao đổi, tư vấn kinh nghiệm', isSelected: false,
                       ),
                       const ListOptionsWidget(
                         icon: Icons.swap_horiz,
                         title: 'Chuyển tài khoản',
-                        description: 'Có thể đăng nhập nhiều tài khoản...',
+                        description: 'Có thể đăng nhập nhiều tài khoản...', isSelected: false,
                       ),
                       ListOptionsWidget(
-                        icon: Icons.logout,
-                        title: 'Đăng xuất',
-                        iconColor: Colors.red,
-                        textColor: Colors.red,
-                        onTap: () async {
-                          // Thực hiện đăng xuất
-                          await FirebaseAuthService().signOut(context);
-                          context.go('/');
-                        },
+                          icon: Icons.logout,
+                          title: 'Đăng xuất',
+                          iconColor: Colors.red,
+                          textColor: Colors.red,
+                          onTap: () async {
+                            // Thực hiện đăng xuất
+                            await FirebaseAuthService().signOut(context);
+                            context.go('/');
+                          }
                       ),
                     ],
                   ),

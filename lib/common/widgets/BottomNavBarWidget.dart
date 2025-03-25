@@ -18,7 +18,7 @@ class BottomNavBarWidget extends StatelessWidget {
         context.go('/notifications');
         break;
       case 3:
-        context.go('/profile');
+        context.go('/manage');
         break;
     }
   }
