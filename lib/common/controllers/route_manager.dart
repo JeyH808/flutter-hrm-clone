@@ -24,10 +24,19 @@ final GoRouter appRouter = GoRouter(
     final user = FirebaseAuth.instance.currentUser;
     final path = state.uri.path;
 
-    if (user != null && path == '/') {
-      return '/home';
+    if (kIsWeb) {
+      if (user != null) {
+        if (path == '/login' || path == '/register' || path == '/') {
+          return '/home';
+        }
+      } else {
+        if (path == '/home' || path == '/tasks' || path == '/notifications' || path == '/manage' || path == '/work-schedule' || path == '/') {
+          return '/login';
+        }
+      }
     }
-    return null;
+
+    return null; // Không thay đổi điều hướng trên mobile
   },
   routes: [
     GoRoute(
@@ -60,13 +69,10 @@ final GoRouter appRouter = GoRouter(
         return kIsWeb ? const WebHome() : const HomePage();
       },
     ),
-    // Trang hoàn thiện thông tin
     GoRoute(
       path: '/complete-profile',
       builder: (context, state) => const CompleteProfilePage(),
     ),
-
-    // Sử dụng ShellRoute để điều hướng có BottomNavigationBar
     ShellRoute(
       builder: (context, state, child) {
         int currentIndex = _getIndexFromPath(state.uri.toString());
@@ -83,6 +89,7 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
 
 // Hàm lấy index cho BottomNavigationBar
 int _getIndexFromPath(String path) {

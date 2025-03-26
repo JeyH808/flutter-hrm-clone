@@ -7,6 +7,8 @@ import '../../common/widgets/ListOptionsWidget.dart';
 import '../../common/widgets/GridHomePage.dart';
 import 'dart:typed_data';
 
+import 'WebScheduleBox.dart';
+
 class WebHome extends StatefulWidget {
   const WebHome({super.key});
 
@@ -15,13 +17,21 @@ class WebHome extends StatefulWidget {
 }
 
 class _WebHomeState extends State<WebHome> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _currentUser;
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = _auth.currentUser;
+  }
+
   String selectedOption = 'Trang Chủ';
   final ScrollController scrollController = ScrollController();
 
   void scrollLeft() {
     scrollController.animateTo(
       scrollController.offset - 220,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 150),
       curve: Curves.easeInOut,
     );
   }
@@ -29,10 +39,11 @@ class _WebHomeState extends State<WebHome> {
   void scrollRight() {
     scrollController.animateTo(
       scrollController.offset + 220,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 150),
       curve: Curves.easeInOut,
     );
   }
+
 
   @override
   void dispose() {
@@ -104,7 +115,7 @@ class _WebHomeState extends State<WebHome> {
                                     ),
                                   ),
                                   Text(
-                                    userData?['department'] ?? 'Không có bộ phận',
+                                    userData['department'] ?? 'Không có bộ phận',
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
@@ -179,7 +190,9 @@ class _WebHomeState extends State<WebHome> {
                     child: selectedOption == 'Trang Chủ'
                         ? Padding(
                       padding: const EdgeInsets.all(10.0),
+
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,11 +229,13 @@ class _WebHomeState extends State<WebHome> {
                                 ),
                               ),
                               IconButton(
-                                icon: Icon(Icons.arrow_forward_ios),
+                                icon: const Icon(Icons.arrow_forward_ios),
                                 onPressed: scrollRight,
                               ),
                             ],
                           ),
+                          const SizedBox(height: 20),
+                          const WebScheduleBox(), // Box hiển thị lịch làm việc
                         ],
                       ),
                     )
@@ -237,3 +252,4 @@ class _WebHomeState extends State<WebHome> {
     );
   }
 }
+

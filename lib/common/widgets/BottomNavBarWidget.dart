@@ -9,16 +9,16 @@ class BottomNavBarWidget extends StatelessWidget {
   void _onItemTapped(BuildContext context, int index) {
     switch (index) {
       case 0:
-        context.go('/home');
+        context.push('/home');
         break;
       case 1:
-        context.go('/tasks');
+        context.push('/tasks');
         break;
       case 2:
-        context.go('/notifications');
+        context.push('/notifications');
         break;
       case 3:
-        context.go('/manage');
+        context.push('/manage');
         break;
     }
   }

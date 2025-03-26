@@ -80,7 +80,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+      return false; // Chặn back button khi ở trang Home
+    },
+    child: Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -247,6 +251,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: const BottomNavBarWidget(currentIndex: 0),
+    ),
     );
   }
 }
