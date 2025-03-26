@@ -16,6 +16,29 @@ class WebHome extends StatefulWidget {
 
 class _WebHomeState extends State<WebHome> {
   String selectedOption = 'Trang Chủ';
+  final ScrollController scrollController = ScrollController();
+
+  void scrollLeft() {
+    scrollController.animateTo(
+      scrollController.offset - 220,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void scrollRight() {
+    scrollController.animateTo(
+      scrollController.offset + 220,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +66,6 @@ class _WebHomeState extends State<WebHome> {
 
             return Row(
               children: [
-                // Phần Navbar (30%)
                 Expanded(
                   flex: 3,
                   child: Container(
@@ -150,50 +172,60 @@ class _WebHomeState extends State<WebHome> {
                     ),
                   ),
                 ),
-
-                // Phần Nội dung (70%)
                 Expanded(
                   flex: 7,
                   child: Container(
                     color: Colors.white,
                     child: selectedOption == 'Trang Chủ'
                         ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: GridView.count(
-                        crossAxisCount: 2,
-                        childAspectRatio: 3 / 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
                         children: [
-                          GridItem(
-                            icon: Icons.calendar_today,
-                            title: 'Lịch làm việc',
-                            subtitle: 'Ca làm việc và thay ca',
-                            onTap: () {},
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.arrow_back_ios),
+                                onPressed: scrollLeft,
+                              ),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 130,
+                                  child: GestureDetector(
+                                    onHorizontalDragUpdate: (details) {
+                                      // Cập nhật vị trí cuộn theo hướng di chuột
+                                      scrollController.jumpTo(scrollController.offset - details.primaryDelta!);
+                                    },
+                                    child: ListView(
+                                      controller: scrollController,
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const BouncingScrollPhysics(),
+                                      children: [
+                                        GridItem(icon: Icons.calendar_today, title: 'Lịch làm việc', subtitle: 'Ca làm việc và thay ca', onTap: () {}),
+                                        GridItem(icon: Icons.work, title: 'Công việc', subtitle: 'Danh sách công việc', onTap: () {}),
+                                        GridItem(icon: Icons.group, title: 'Nhân sự', subtitle: 'Quản lý nhân viên', onTap: () {}),
+                                        GridItem(icon: Icons.assignment, title: 'Báo cáo', subtitle: 'Báo cáo công việc', onTap: () {}),
+                                        GridItem(icon: Icons.rule, title: 'Nội quy', subtitle: 'Nội quy công việc', onTap: () {}),
+                                        GridItem(icon: Icons.article, title: 'Hướng dẫn', subtitle: 'Sử dụng hệ thống', onTap: () {}),
+                                      ].map((item) => Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                                        child: SizedBox(width: 150, child: item),
+                                      )).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.arrow_forward_ios),
+                                onPressed: scrollRight,
+                              ),
+                            ],
                           ),
-                          GridItem(
-                              icon: Icons.beach_access,
-                              title: 'Đăng ký nghỉ',
-                              subtitle: 'Nghỉ ngày, nghỉ ca',
-                              onTap: () {}),
-                          GridItem(
-                              icon: Icons.access_time,
-                              title: 'Số giờ làm việc',
-                              subtitle: '89 giờ',
-                              onTap: () {}),
-                          GridItem(
-                              icon: Icons.announcement,
-                              title: 'Bảng tin',
-                              subtitle: '0 tin tức',
-                              onTap: () {}),
                         ],
                       ),
                     )
                         : const Center(
-                      child: Text(
-                        'Chức năng đang phát triển',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
-                      ),
+                      child: Text('Chức năng đang phát triển', style: TextStyle(fontSize: 18, color: Colors.grey)),
                     ),
                   ),
                 ),

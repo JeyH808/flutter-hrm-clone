@@ -17,17 +17,19 @@ import '../../web/views/Home.dart';
 import '../../web/views/WebLogin.dart';
 import '../../web/views/WebRegister.dart';
 import '../widgets/BottomNavBarWidget.dart';
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   redirect: (context, state) {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+    final path = state.uri.path;
+
+    if (user != null && path == '/') {
       return '/home';
     }
     return null;
   },
   routes: [
-    // Route mặc định: kiểm tra người dùng đã đăng nhập hay chưa
     GoRoute(
       path: '/',
       builder: (context, state) {
@@ -47,10 +49,10 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
-        path: '/work-schedule',
-        builder: (context, state) {
-          return WorkSchedulePage();
-          },
+      path: '/work-schedule',
+      builder: (context, state) {
+        return const WorkSchedulePage();
+      },
     ),
     GoRoute(
       path: '/home',
@@ -63,6 +65,8 @@ final GoRouter appRouter = GoRouter(
       path: '/complete-profile',
       builder: (context, state) => const CompleteProfilePage(),
     ),
+
+    // Sử dụng ShellRoute để điều hướng có BottomNavigationBar
     ShellRoute(
       builder: (context, state, child) {
         int currentIndex = _getIndexFromPath(state.uri.toString());
@@ -72,7 +76,6 @@ final GoRouter appRouter = GoRouter(
         );
       },
       routes: [
-        GoRoute(path: '/home', builder: (context, state) => const HomePage()),
         GoRoute(path: '/tasks', builder: (context, state) => const TaskPage()),
         GoRoute(path: '/notifications', builder: (context, state) => const NotificationPage()),
         GoRoute(path: '/manage', builder: (context, state) => const ManagePage()),
@@ -81,6 +84,7 @@ final GoRouter appRouter = GoRouter(
   ],
 );
 
+// Hàm lấy index cho BottomNavigationBar
 int _getIndexFromPath(String path) {
   switch (path) {
     case '/home':
